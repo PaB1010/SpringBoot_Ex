@@ -7,4 +7,5 @@ spring:
     prefix: classpath:/templates/
 
 file:
-  upload.path: D:/uploads2/
+  upload.path: E:/[uploads]/
+  # upload.path: D:/uploads2/
