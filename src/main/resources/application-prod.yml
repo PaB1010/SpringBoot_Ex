@@ -1,0 +1,10 @@
+# Profile명 = prod
+
+# 실제 배포시 cache 쓰는 설정
+spring:
+  thymeleaf:
+    cache: true
+    prefix: classpath:/templates/
+
+file:
+  upload.path: D:/uploads2/

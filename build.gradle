@@ -1,0 +1,91 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.3.5'
+	id 'io.spring.dependency-management' version '1.1.6'
+}
+
+group = 'org.koreait'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+	implementation 'jakarta.validation:jakarta.validation-api'
+	implementation 'org.hibernate.validator:hibernate-validator'
+
+	// JPA & DB & JDBC
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+	annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+	runtimeOnly 'com.oracle.database.jdbc:ojdbc11'
+
+	// Querydsl
+	annotationProcessor 'com.querydsl:querydsl-apt:5.1.0:jakarta'
+	implementation 'com.querydsl:querydsl-jpa:5.1.0:jakarta'
+
+	// test DB
+	testImplementation 'com.h2database:h2'
+
+	testImplementation ('com.github.javafaker:javafaker:1.0.2') { exclude module: 'snakeyaml' }
+	testImplementation group: 'org.yaml', name: 'snakeyaml', version: '2.2'
+
+
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+/*
+// 자동생성될 Querydsl Code 경로 설정
+def querydslDir = layout.buildDirectory.dir("generated/querydsl").get().asFile
+
+// Java 코드에서 접근 가능하게 설정
+sourceSets {
+	main.java.scrDirs += [ querydslDir ]
+}
+
+// 설정 연결
+tasks.withType(JavaCompile) {
+	options.getGeneratedSourceOutputDirectory().set(file(querydslDir))
+}
+
+// clean시 Generate도 같이 삭제되도록
+clean.doLast {
+	file(querydslDir).deleteDir()
+}
+*/
+def querydslDir = layout.buildDirectory.dir("generated/querydsl").get().asFile
+
+sourceSets {
+	main.java.srcDirs += [ querydslDir ]
+}
+
+tasks.withType(JavaCompile) {
+	options.getGeneratedSourceOutputDirectory().set(file(querydslDir))
+}
+
+clean.doLast {
+	file(querydslDir).deleteDir()
+}
